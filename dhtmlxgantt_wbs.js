@@ -1,6 +1,5 @@
 ;
 gantt.wbs = {
-    //_wbsObj: {},
     _taskNum: 0,
     _firstId: null,
     _isGroupSort: function() {
@@ -16,7 +15,6 @@ gantt.wbs = {
         return task.$wbs;
     },
     _setWBSCode: function(task, value) {
-        //this._wbsObj[task.id] = value;
         task.$wbs = value;
     },
     getWBSCode: function(task) {                                        
