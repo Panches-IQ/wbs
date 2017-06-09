@@ -5,8 +5,7 @@ gantt.wbs = {
     _firstId: null,
     _isGroupSort: function() {
         var firstTask = gantt.getTask(gantt.getChildren(gantt.config.root_id)[0]);
-        if(firstTask.$virtual) return true;
-        return false;
+        return firstTask.$virtual || false;
     },
     _getWBSCode: function(task) {
         if(!task) return "";
