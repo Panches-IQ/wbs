@@ -21,6 +21,7 @@ gantt.wbs = {
         return gantt.wbs._getWBSCode(task);
     },
     _calcWBSObj: function() {
+        if(this._isGroupSort()) return true;
         this._taskNum = 0;
         gantt.eachTask(function(ch) {
             this.wbs._taskNum++;
@@ -50,8 +51,7 @@ gantt.getWBSCode = function getWBSCode(task) {
 };
 
 gantt.attachEvent("onAfterTaskMove", function() {
-    if(!gantt.wbs._isGroupSort())
-        gantt.wbs._calcWBSObj();
+    gantt.wbs._calcWBSObj();
 });
 
 gantt.attachEvent("onAfterTaskDelete", function() {
