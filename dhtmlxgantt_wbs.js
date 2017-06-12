@@ -1,7 +1,6 @@
 ;
 gantt.wbs = {
     _taskNum: 0,
-    _firstId: null,
     _isGroupSort: function() {
         var firstTask = gantt.getTask(gantt.getChildren(gantt.config.root_id)[0]);
         return firstTask.$virtual || false;
@@ -21,27 +20,26 @@ gantt.wbs = {
         return gantt.wbs._getWBSCode(task);
     },
     _calcWBSObj: function() {
-        if(this._isGroupSort()) return true;
+        if(this._isGroupSort()) return false;
         this._taskNum = 0;
         gantt.eachTask(function(ch) {
             this.wbs._taskNum++;
             if(this.wbs._taskNum == 1) {
                 this.wbs._setWBSCode(ch, "1");
-                this._firstId = ch.id;
+                return;
+            } 
+            var _prevSibling = gantt.getPrevSibling(ch.id);
+            if (_prevSibling != null) {
+                var _wbs = gantt.getTask(_prevSibling).$wbs;
+                if(_wbs) {
+                    _wbs = _wbs.split(".");
+                    _wbs[_wbs.length-1]++;
+                    this.wbs._setWBSCode(ch, _wbs.join("."));
+                } 
             } else {
-                var prevSibling = gantt.getPrevSibling(ch.id)
-                if(prevSibling != null) {
-                    var _wbs = gantt.getTask(prevSibling).$wbs;
-                    if(_wbs) {
-                        _wbs = _wbs.split(".");
-                        _wbs[_wbs.length-1]++;
-                        this.wbs._setWBSCode(ch, _wbs.join("."));
-                    } 
-                } else {
-                    var parent = gantt.getParent(ch.id);
-                    this.wbs._setWBSCode(ch, gantt.getTask(parent).$wbs + ".1");
-                };
-            };
+                var _parent = gantt.getParent(ch.id);
+                this.wbs._setWBSCode(ch, gantt.getTask(_parent).$wbs + ".1");
+            };            
         }, gantt.config.root_id);
     }
 }
