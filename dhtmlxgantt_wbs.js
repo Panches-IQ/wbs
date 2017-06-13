@@ -1,6 +1,5 @@
 ;
 gantt.wbs = {
-    _taskNum: 0,
     _isGroupSort: function() {
         var firstTask = gantt.getTask(gantt.getChildren(gantt.config.root_id)[0]);
         return firstTask.$virtual || false;
@@ -10,7 +9,7 @@ gantt.wbs = {
         if(task.$virtual) return "";                    
         if(this._isGroupSort()) return task.$wbs || "n/a";
         if(!task.$wbs)
-            this._calcWBSObj();   
+            this._calcWBS();   
         return task.$wbs;
     },
     _setWBSCode: function(task, value) {
@@ -19,12 +18,12 @@ gantt.wbs = {
     getWBSCode: function(task) {                                        
         return gantt.wbs._getWBSCode(task);
     },
-    _calcWBSObj: function() {
+    _calcWBS: function() {
         if(this._isGroupSort()) return false;
-        this._taskNum = 0;
-        gantt.eachTask(function(ch) {
-            this.wbs._taskNum++;
-            if(this.wbs._taskNum == 1) {
+        var _isFirst = true;
+        gantt.eachTask(function(ch) {            
+            if(_isFirst) {
+                _isFirst = false;
                 this.wbs._setWBSCode(ch, "1");
                 return;
             } 
@@ -49,9 +48,9 @@ gantt.getWBSCode = function getWBSCode(task) {
 };
 
 gantt.attachEvent("onAfterTaskMove", function() {
-    gantt.wbs._calcWBSObj();
+    gantt.wbs._calcWBS();
 });
 
 gantt.attachEvent("onAfterTaskDelete", function() {
-    gantt.wbs._calcWBSObj();
+    gantt.wbs._calcWBS();
 });
